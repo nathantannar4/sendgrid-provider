@@ -10,7 +10,7 @@ public final class SendGridClient: Service {
         self.apiKey = apiKey
     }
     
-    public func send(_ emails: [SendGridEmail], on worker: Worker) throws -> Future<Void> {
+    public func send(_ emails: SendGridEmail..., on worker: Worker) throws -> Future<HTTPStatus> {
         
         return emails.map { (email) in
             
@@ -36,6 +36,6 @@ public final class SendGridClient: Service {
                     throw error
                 }
             }
-        }.flatten(on: worker)
+        }.flatten(on: worker).transform(to: .ok)
     }
 }

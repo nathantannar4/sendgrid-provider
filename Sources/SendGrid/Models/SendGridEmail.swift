@@ -13,7 +13,7 @@ public struct SendGridEmail: Content {
     public var subject: String?
     
     /// An array in which you may specify the content of your email.
-    public var content: [[String: String]]?
+    public var content: [SendGridEmailContent]?
 
     /// An array of objects in which you can specify any attachments you want to include.
     public var attachments: [EmailAttachment]?
@@ -34,7 +34,7 @@ public struct SendGridEmail: Content {
     public var customArgs: [String: String]?
     
     /// A unix timestamp allowing you to specify when you want your email to be delivered. This may be overridden by the personalizations[x].send_at parameter. You can't schedule more than 72 hours in advance.
-    public var sendAt: Date?
+    public var sendAt: Double?
 
     /// This ID represents a batch of emails to be sent at the same time. Including a batch_id in your request allows you include this email in that batch, and also enables you to cancel or pause the delivery of that batch.
     public var batchId: String?
@@ -55,14 +55,14 @@ public struct SendGridEmail: Content {
                 from: EmailAddress? = nil,
                 replyTo: EmailAddress? = nil,
                 subject: String? = nil,
-                content: [[String: String]]? = nil,
+                content: [SendGridEmailContent]? = nil,
                 attachments: [EmailAttachment]? = nil,
                 templateId: String? = nil,
                 sections: [String: String]? = nil,
                 headers: [String: String]? = nil,
                 categories: [String]? = nil,
                 customArgs: [String: String]? = nil,
-                sendAt: Date? = nil,
+                sendAt: Double? = nil,
                 batchId: String? = nil,
                 asm: AdvancedSuppressionManager? = nil,
                 ipPoolName: String? = nil,
@@ -85,6 +85,14 @@ public struct SendGridEmail: Content {
         self.ipPoolName = ipPoolName
         self.mailSettings = mailSettings
         self.trackingSettings = trackingSettings
+    }
+    
+    public init(to: EmailAddress,
+                from: EmailAddress,
+                subject: String,
+                content: SendGridEmailContent,
+                sendAt: Double) {
+        self.init(personalizations: [Personalization(to: [to])], from: from, replyTo: from, subject: subject, content: [content], sendAt: sendAt)
     }
     
     public enum CodingKeys: String, CodingKey {
